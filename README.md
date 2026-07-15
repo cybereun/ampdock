@@ -3,46 +3,43 @@
 [![Release](https://img.shields.io/github/v/release/cybereun/ampdock?display_name=tag&sort=semver)](https://github.com/cybereun/ampdock/releases)
 [![License](https://img.shields.io/github/license/cybereun/ampdock)](LICENSE)
 [![Windows](https://img.shields.io/badge/platform-Windows%2010%20%2F%2011-0078D4?logo=windows)](https://github.com/cybereun/ampdock/releases)
-[![Electron](https://img.shields.io/badge/Electron-43-47848F?logo=electron&logoColor=white)](https://www.electronjs.org/)
+[![Runtime](https://img.shields.io/badge/runtime-Microsoft%20Edge-0078D7?logo=microsoftedge&logoColor=white)](https://www.microsoft.com/edge)
 
-A compact, local-first Windows audio player built as three detachable desktop panels: a player, a ten-band equalizer, and a searchable playlist. AmpDock keeps the dense, instrument-like feel of classic modular audio players without turning your local music collection into a cloud service.
+AmpDock is a compact, local-first Windows audio player with three detachable panels: Player, ten-band Equalizer, and Playlist. It is built for people who prefer a dense, instrument-like desktop player over a cloud music service.
 
 ![AmpDock icon](assets/icon.svg)
 
-## Features
+## Highlights
 
-- **Three independent panels** — Move the player, equalizer, and playlist separately; hide secondary panels without stopping playback.
-- **Desktop docking** — Panels magnetically snap to one another and to screen edges. Attached panels follow their parent when moved, while detached panels stay independent.
-- **Local audio workflow** — Import multiple files or recursively scan folders. Drag files or folders onto any panel to add them to the playlist.
-- **Common formats** — MP3, WAV, M4A, AAC, FLAC, OGG, and Opus when supported by Chromium's decoder.
-- **Metadata-aware playback** — Reads title, artist, album, duration, embedded cover art, and track number when available; filenames are a graceful fallback.
-- **Playback essentials** — Seek, volume, mute, previous/next, shuffle, repeat-one/repeat-all, media keys, and Media Session integration.
-- **Ten-band equalizer** — Flat, Warm, Clarity, Vocal, and Night presets; individual band controls, bypass, and reset.
-- **Playlist tools** — Search, sort, drag reorder, select, remove, clear, track count, and total duration.
-- **Persistent state** — Restores panel bounds, visibility, docking layout, playlist paths, active track, volume, playback options, and equalizer settings.
-- **Secure Electron shell** — Sandboxed renderers, context isolation, validated IPC, blocked popup/navigation paths, and local packaged content only.
+- **Three independent panels** — Player, Equalizer, and Playlist open together and can be moved, hidden, restored, minimized, reset, or kept on top.
+- **Local-only playback** — Audio is selected with Windows dialogs and is streamed only through an in-process `127.0.0.1` host. AmpDock does not upload your music.
+- **Shared state** — Separate panel windows stay in sync for playlist, selected track, volume, shuffle, repeat, equalizer settings, and panel visibility.
+- **Audio controls** — Play/pause, seek, previous/next, mute, volume, shuffle, repeat, playlist search, sort, reorder, remove, and clear.
+- **Ten-band equalizer** — Flat, Warm, Clarity, Vocal, and Night presets plus per-band adjustment and bypass.
+- **Common local formats** — MP3, WAV, M4A, AAC, FLAC, OGG, and Opus when supported by the installed Edge decoder.
+- **No Electron runtime** — V1.0.0 packages use a small native Windows launcher and the installed Microsoft Edge runtime, avoiding the Electron GPU-startup conflict found on some Windows 11 systems.
 
 ## Install
 
-### Option 1: Installer (recommended)
+### Installer (recommended)
 
 1. Download `AmpDock-1.0.0-x64-installer.exe` from the [V1.0.0 release](https://github.com/cybereun/ampdock/releases/tag/V1.0.0).
-2. Run the installer and choose an installation directory if desired.
-3. Launch AmpDock from the Start menu or desktop shortcut.
+2. Run it and choose the install directory if desired.
+3. Start AmpDock from the Start menu or desktop shortcut.
 
-### Option 2: Portable executable
+### Portable
 
 1. Download `AmpDock-1.0.0-x64-portable.exe` from the [V1.0.0 release](https://github.com/cybereun/ampdock/releases/tag/V1.0.0).
-2. Place it in any writable folder and run it. No installation is required.
+2. Put it in any writable folder and run it. Installation is not required.
 
-Both packages target 64-bit Windows 10 or Windows 11. AmpDock runs entirely locally; importing and playback do not upload your music files.
+Both builds target 64-bit Windows 10/11. Microsoft Edge must be installed; it is included with supported Windows versions. On launch, AmpDock opens Player, Equalizer, and Playlist as separate app windows.
 
 ## Getting started
 
-1. Use the **Add files** or **Add folder** button, or drop audio files/folders onto a panel.
-2. Select a row in the playlist and double-click it to play.
-3. Drag title bars to arrange the panels. Move within 18 px of an edge to dock.
-4. Use the equalizer panel to choose a preset or shape the ten frequency bands.
+1. Click **Add audio files** or **Add folder** in Player or Playlist.
+2. Select a track in Playlist and double-click it, or use the Player controls.
+3. Arrange the windows to suit your desktop. Use the Player toolbar to show/hide the other panels, pin all panels on top, or reset their layout.
+4. Shape playback in the Equalizer panel.
 
 ## Keyboard shortcuts
 
@@ -57,59 +54,47 @@ Both packages target 64-bit Windows 10 or Windows 11. AmpDock runs entirely loca
 
 ## Build from source
 
-### Requirements
-
-- Windows 10/11 x64
-- Node.js 24 or later
-- npm 11 or later
-
-> npm can have trouble operating directly in some synced folders whose absolute path contains non-ASCII characters. If that happens, copy or clone the project to an ASCII-only path such as `C:\\dev\\AmpDock` before installing dependencies.
+Requirements: Windows 10/11 x64, Microsoft Edge, .NET Framework 4.x (bundled with Windows), Node.js/npm for the test suite, and NSIS for installer creation.
 
 ```powershell
 git clone https://github.com/cybereun/ampdock.git
 cd ampdock
 npm install
-npm start
-```
 
-### Quality checks
-
-```powershell
-npm test
-node --check src/main.cjs
-node --check src/preload.cjs
-node --check src/renderer.js
-```
-
-### Windows packages
-
-```powershell
-# Unpacked application for smoke testing
+# Native portable launcher smoke build
 npm run pack:win
 
-# NSIS installer and standalone portable executable
+# Portable EXE and NSIS installer
 npm run build:win
 ```
 
-The generated artifacts are written to `dist/`:
+Artifacts are written to `dist-release/`:
 
-- `AmpDock-1.0.0-x64-installer.exe`
 - `AmpDock-1.0.0-x64-portable.exe`
+- `AmpDock-1.0.0-x64-installer.exe`
+
+Run quality checks with:
+
+```powershell
+npm test
+node --check src/renderer.js
+node --check native/edge-bridge.js
+```
 
 ## Project structure
 
 ```text
+native/
+  AmpDockEdge.cs       Native launcher and loopback media/state host
+  edge-bridge.js       Browser bridge for shared local state
+  AmpDock.nsi          NSIS installer definition
 src/
-  main.cjs       Electron windows, IPC, persistence, metadata, docking
-  preload.cjs    Minimal sandboxed renderer bridge
-  renderer.js    Player, equalizer, and playlist behavior
-  core.cjs       Testable playlist, formatting, and docking logic
-  index.html     Shared panel markup
-  styles.css     Panel visual system and responsive playlist layout
+  index.html           Shared panel markup
+  renderer.js          Player, equalizer, and playlist behavior
+  styles.css           Panel visual system
+  core.cjs             Testable playlist, formatting, and docking logic
 tests/
-  core.test.cjs  Node test suite for pure core behavior
-assets/
-  icon.ico       Windows application icon
+  core.test.cjs        Node test suite
 ```
 
 ## License

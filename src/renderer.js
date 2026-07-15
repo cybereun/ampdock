@@ -55,6 +55,12 @@
       event.preventDefault();
       shell.classList.remove('drop-active');
       const paths = [];
+      if (typeof api.addFilesFromDrop === 'function') {
+        controller?.setStatus?.('SCANNING');
+        const result = await api.addFilesFromDrop(event.dataTransfer.files);
+        controller?.setStatus?.(result?.added ? `${result.added} ADDED` : 'READY');
+        return;
+      }
       for (const file of Array.from(event.dataTransfer.files || [])) {
         try {
           const filePath = api.pathForFile(file);

@@ -14,10 +14,11 @@
   },
   "homepage": "https://github.com/cybereun/ampdock#readme",
   "scripts": {
-    "start": "electron .",
+    "start": "powershell -ExecutionPolicy Bypass -File native\\build_edge.ps1",
     "test": "node --test tests/*.test.cjs",
-    "build:win": "electron-builder --win nsis portable",
-    "pack:win": "electron-builder --win dir"
+    "build:win": "powershell -ExecutionPolicy Bypass -File native\\build_release.ps1",
+    "pack:win": "powershell -ExecutionPolicy Bypass -File native\\build_edge.ps1",
+    "start:electron": "electron ."
   },
   "dependencies": {
     "lucide": "1.24.0",
