@@ -1,8 +1,6 @@
-node_modules/
+publish/
+release/
+release-native/
+release-final/
 dist/
-dist-edge/
-dist-release/
-output/
-captures/
-.playwright-cli/
-*.log
+node_modules/
