@@ -1,0 +1,69 @@
+{
+  "name": "ampdock",
+  "version": "1.0.0",
+  "description": "A dockable, three-window desktop audio player for Windows.",
+  "main": "src/main.cjs",
+  "author": "cybereun",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cybereun/ampdock.git"
+  },
+  "bugs": {
+    "url": "https://github.com/cybereun/ampdock/issues"
+  },
+  "homepage": "https://github.com/cybereun/ampdock#readme",
+  "scripts": {
+    "start": "electron .",
+    "test": "node --test tests/*.test.cjs",
+    "build:win": "electron-builder --win nsis portable",
+    "pack:win": "electron-builder --win dir"
+  },
+  "dependencies": {
+    "lucide": "1.24.0",
+    "music-metadata": "11.13.0"
+  },
+  "devDependencies": {
+    "electron": "43.1.0",
+    "electron-builder": "26.15.3"
+  },
+  "build": {
+    "appId": "com.ampdock.player",
+    "productName": "AmpDock",
+    "asar": true,
+    "files": [
+      "src/**/*",
+      "assets/**/*",
+      "package.json",
+      "node_modules/lucide/**/*",
+      "node_modules/music-metadata/**/*",
+      "node_modules/@tokenizer/**/*",
+      "node_modules/token-types/**/*",
+      "node_modules/strtok3/**/*",
+      "node_modules/peek-readable/**/*",
+      "node_modules/file-type/**/*",
+      "node_modules/uint8array-extras/**/*"
+    ],
+    "directories": {
+      "output": "dist"
+    },
+    "win": {
+      "icon": "assets/icon.ico",
+      "target": [
+        { "target": "nsis", "arch": ["x64"] },
+        { "target": "portable", "arch": ["x64"] }
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "AmpDock",
+      "artifactName": "${productName}-${version}-${arch}-installer.${ext}"
+    },
+    "portable": {
+      "artifactName": "${productName}-${version}-${arch}-portable.${ext}"
+    }
+  }
+}

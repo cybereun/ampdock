@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: file:; script-src 'self'; style-src 'self'; img-src 'self' data:; media-src 'self' file: data: blob:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <title>AmpDock</title>
+  <link rel="stylesheet" href="styles.css">
+  <script defer src="../node_modules/lucide/dist/umd/lucide.js"></script>
+  <script defer src="renderer.js"></script>
+</head>
+<body>
+  <main id="app">
+    <section class="panel-shell player-shell" data-panel="player" aria-label="AmpDock player">
+      <header class="titlebar">
+        <div class="brand"><span class="brand-mark" aria-hidden="true"></span><strong>AmpDock</strong></div>
+        <div class="title-status"><span class="signal-dot"></span><span id="player-status">READY</span></div>
+        <div class="window-tools">
+          <button class="icon-button" id="toggle-equalizer" type="button" title="Show or hide equalizer" aria-label="Show or hide equalizer"><i data-lucide="sliders-horizontal"></i></button>
+          <button class="icon-button" id="toggle-playlist" type="button" title="Show or hide playlist" aria-label="Show or hide playlist"><i data-lucide="list-music"></i></button>
+          <button class="icon-button" id="toggle-top" type="button" title="Always on top" aria-label="Always on top"><i data-lucide="pin"></i></button>
+          <button class="icon-button" data-window-command="reset-layout" type="button" title="Reset panel layout" aria-label="Reset panel layout"><i data-lucide="layout-panel-top"></i></button>
+          <button class="icon-button" data-window-command="minimize" type="button" title="Minimize" aria-label="Minimize"><i data-lucide="minus"></i></button>
+          <button class="icon-button close-button" data-window-command="close" type="button" title="Quit AmpDock" aria-label="Quit AmpDock"><i data-lucide="x"></i></button>
+        </div>
+      </header>
+
+      <div class="player-content">
+        <div class="now-playing">
+          <div class="cover-frame"><img id="cover-art" alt=""><i data-lucide="disc-3" class="cover-fallback"></i></div>
+          <div class="track-copy">
+            <div id="track-title" class="track-title">No track loaded</div>
+            <div id="track-meta" class="track-meta">Add local audio to begin</div>
+          </div>
+          <canvas id="visualizer" width="176" height="72" aria-label="Audio spectrum"></canvas>
+        </div>
+
+        <div class="timeline-row">
+          <output id="elapsed">00:00</output>
+          <input id="seek" class="seek" type="range" min="0" max="1000" value="0" aria-label="Seek">
+          <output id="duration">00:00</output>
+        </div>
+
+        <div class="player-actions">
+          <div class="transport-group" aria-label="Playback controls">
+            <button class="control-button" id="previous" type="button" title="Previous" aria-label="Previous"><i data-lucide="skip-back"></i></button>
+            <button class="control-button primary-control" id="play" type="button" title="Play" aria-label="Play"><i data-lucide="play"></i></button>
+            <button class="control-button" id="next" type="button" title="Next" aria-label="Next"><i data-lucide="skip-forward"></i></button>
+            <button class="control-button" id="shuffle" type="button" title="Shuffle" aria-label="Shuffle"><i data-lucide="shuffle"></i></button>
+            <button class="control-button" id="repeat" type="button" title="Repeat" aria-label="Repeat"><i data-lucide="repeat-2"></i><span id="repeat-one">1</span></button>
+          </div>
+
+          <div class="volume-group">
+            <button class="icon-button" id="mute" type="button" title="Mute" aria-label="Mute"><i data-lucide="volume-2"></i></button>
+            <input id="volume" type="range" min="0" max="100" value="78" aria-label="Volume">
+          </div>
+
+          <div class="source-group">
+            <button class="icon-button source-button" id="add-files" type="button" title="Add audio files" aria-label="Add audio files"><i data-lucide="file-audio"></i></button>
+            <button class="icon-button source-button" id="add-folder" type="button" title="Add folder" aria-label="Add folder"><i data-lucide="folder-plus"></i></button>
+          </div>
+        </div>
+      </div>
+      <audio id="audio" preload="metadata"></audio>
+    </section>
+
+    <section class="panel-shell equalizer-shell" data-panel="equalizer" aria-label="AmpDock equalizer">
+      <header class="titlebar">
+        <div class="brand"><span class="brand-mark cyan" aria-hidden="true"></span><strong>Equalizer</strong></div>
+        <div class="eq-head-actions">
+          <label class="switch-control" title="Equalizer on or off">
+            <input id="eq-enabled" type="checkbox" checked>
+            <span aria-hidden="true"></span>
+            <b>EQ</b>
+          </label>
+          <select id="eq-preset" class="compact-select" aria-label="Equalizer preset">
+            <option value="flat">Flat</option>
+            <option value="warm">Warm</option>
+            <option value="clarity">Clarity</option>
+            <option value="vocal">Vocal</option>
+            <option value="night">Night</option>
+            <option value="custom">Custom</option>
+          </select>
+          <button class="icon-button" id="eq-reset" type="button" title="Reset equalizer" aria-label="Reset equalizer"><i data-lucide="rotate-ccw"></i></button>
+          <button class="icon-button close-button" data-window-command="close" type="button" title="Hide equalizer" aria-label="Hide equalizer"><i data-lucide="x"></i></button>
+        </div>
+      </header>
+      <div id="equalizer" class="equalizer" aria-label="Equalizer bands"></div>
+      <footer class="eq-footer"><span>-12 dB</span><span>10-BAND PARAMETRIC</span><span>+12 dB</span></footer>
+    </section>
+
+    <section class="panel-shell playlist-shell" data-panel="playlist" aria-label="AmpDock playlist">
+      <header class="titlebar">
+        <div class="brand"><span class="brand-mark amber" aria-hidden="true"></span><strong>Playlist</strong></div>
+        <div class="playlist-summary"><span id="playlist-count">0 TRACKS</span><span class="summary-separator">/</span><span id="playlist-duration">00:00</span></div>
+        <div class="window-tools">
+          <span id="dock-indicator" class="dock-indicator" title="Panel docking state"><i data-lucide="link-2"></i></span>
+          <button class="icon-button close-button" data-window-command="close" type="button" title="Hide playlist" aria-label="Hide playlist"><i data-lucide="x"></i></button>
+        </div>
+      </header>
+
+      <div class="playlist-toolbar">
+        <label class="search-field">
+          <i data-lucide="search"></i>
+          <input id="playlist-search" type="search" placeholder="Search playlist" aria-label="Search playlist">
+        </label>
+        <select id="playlist-sort" class="compact-select" aria-label="Sort playlist">
+          <option value="manual">Manual</option>
+          <option value="title">Title</option>
+          <option value="artist">Artist</option>
+          <option value="album">Album</option>
+          <option value="duration">Duration</option>
+        </select>
+        <button class="icon-button source-button" id="playlist-add-files" type="button" title="Add audio files" aria-label="Add audio files"><i data-lucide="file-plus-2"></i></button>
+        <button class="icon-button source-button" id="playlist-add-folder" type="button" title="Add folder" aria-label="Add folder"><i data-lucide="folder-plus"></i></button>
+        <button class="icon-button" id="playlist-clear" type="button" title="Clear playlist" aria-label="Clear playlist"><i data-lucide="list-x"></i></button>
+      </div>
+
+      <div class="playlist-column-head" aria-hidden="true"><span>#</span><span>TRACK</span><span>ALBUM</span><span>TIME</span><span></span></div>
+      <ol id="playlist" class="playlist"></ol>
+      <div id="playlist-empty" class="playlist-empty">
+        <i data-lucide="music-2"></i>
+        <strong>Playlist is empty</strong>
+        <span>Drop audio here</span>
+      </div>
+      <div class="resize-corner" aria-hidden="true"><i data-lucide="grip"></i></div>
+    </section>
+  </main>
+</body>
+</html>
