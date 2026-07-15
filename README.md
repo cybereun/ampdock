@@ -26,13 +26,13 @@ A compact, local-first Windows audio player built as three detachable desktop pa
 
 ### Option 1: Installer (recommended)
 
-1. Download `AmpDock-1.0.0-x64-installer.exe` from the [v1.0.0 release](https://github.com/cybereun/ampdock/releases/tag/v1.0.0).
+1. Download `AmpDock-1.0.0-x64-installer.exe` from the [V1.0.0 release](https://github.com/cybereun/ampdock/releases/tag/V1.0.0).
 2. Run the installer and choose an installation directory if desired.
 3. Launch AmpDock from the Start menu or desktop shortcut.
 
 ### Option 2: Portable executable
 
-1. Download `AmpDock-1.0.0-x64-portable.exe` from the [v1.0.0 release](https://github.com/cybereun/ampdock/releases/tag/v1.0.0).
+1. Download `AmpDock-1.0.0-x64-portable.exe` from the [V1.0.0 release](https://github.com/cybereun/ampdock/releases/tag/V1.0.0).
 2. Place it in any writable folder and run it. No installation is required.
 
 Both packages target 64-bit Windows 10 or Windows 11. AmpDock runs entirely locally; importing and playback do not upload your music files.
